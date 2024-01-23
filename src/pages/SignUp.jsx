@@ -1,6 +1,4 @@
 
-import  {useState } from "react";
-
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -15,7 +13,6 @@ const SignUp = () => {
     reset,
   } = useForm();
 
-  const [error, setError] = useState("");
 
   const onSubmit = (data) => {
     const currentUser = {
@@ -26,10 +23,26 @@ const SignUp = () => {
       role: data.userType,
     };
     console.log(currentUser);
-    toast.success("Sign Up Successful!");
-    reset()
-    setError('')
-      
+
+    fetch("http://localhost:5000/register", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(currentUser),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          // const accessToken = data.data.accessToken;
+          // setToken(accessToken);
+          // localStorage.setItem("accessToken", accessToken);
+          reset();
+          toast.success("Sign Up Successful!");
+        } else {
+          toast.error("Sign Up Failed!");
+        }
+      });
     
   };
 
@@ -176,11 +189,6 @@ const SignUp = () => {
               className="btn btn-primary w-full mt-4 text-white"
               value="SignUp"
             />
-            <div className="mt-2 text-center">
-              {error && ( // Display the error message if present
-                <span className=" text-red-500 text-sm ">{error}</span>
-              )}
-            </div>
           </form>
         </div>
       </div>
