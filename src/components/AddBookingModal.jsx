@@ -1,17 +1,15 @@
 
-import { useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 
 const AddBookingModal = ({ addConfirm, setAddConfirm }) => {
   const { _id } = addConfirm;
+  
   const user = {
     name: 'Forman',
     email: 'email@mail.com',
-    
-    renter: '1234_id',
-    
   };
 
 
@@ -20,24 +18,35 @@ const AddBookingModal = ({ addConfirm, setAddConfirm }) => {
     return isValid || "Please enter a valid phone number";
   };
 
-  const {
-    register,formState: { errors },handleSubmit,reset,} = useForm();
+  const { register,formState: { errors },handleSubmit,reset,} = useForm();
 
-  const [error, setError] = useState("");
 
   const onSubmit = (data) => {
+
     const bookingInfo = {
-      name: user?.name,
-      email: user?.email,
-      phoneNumber: data.phoneNumber,
-      renter: user?._id,
-      house: _id,
+      renterName: user?.name,
+      renterEmail: user?.email,
+      renterPhoneNumber: data.phoneNumber,
+      houseId: _id,
     };
-    reset();
+
+    
+    console.log(bookingInfo);
+
+    axios.post("https://house-hunter-server-wheat.vercel.app/booking", bookingInfo)
+      
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.insertedId) {
+          reset();
           toast.success(`Booking Successful!`);
           setAddConfirm(null);
-          setError('')
-    console.log(bookingInfo);
+        } else {
+          toast.error("Booking Failed!");
+          setAddConfirm(null);
+        }
+      });
+
   };
 
   return (
@@ -108,11 +117,6 @@ const AddBookingModal = ({ addConfirm, setAddConfirm }) => {
                 className="btn btn-primary w-full mt-4 text-white"
                 value="Add Now"
               />
-              <div className="mt-2 text-center">
-                {error && ( // Display the error message if present
-                  <span className=" text-red-500 text-sm ">{error}</span>
-                )}
-              </div>
             </form>
           </div>
           <div className="modal-action">

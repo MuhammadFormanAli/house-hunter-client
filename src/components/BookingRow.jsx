@@ -1,10 +1,16 @@
 
 
 
-const BookingRow = ({ house, index, setDeleteConfirm }) => {
+const BookingRow = ({ house, index,bookingId, setDeleteBookingId,setDeleteConfirm }) => {
   
-  const { name, city, bedrooms, bathrooms, roomSize, rentPerMonth, picture } =
-    house;
+  console.log('bookingId',bookingId)
+  const { name, city, bedrooms, bathrooms, roomSize, rentPerMonth, picture } = house;
+
+  const showDeleteModal = ()=>{
+    setDeleteConfirm(true)
+    setDeleteBookingId(bookingId)
+  }
+
   return (
     <tr>
       <th>{index + 1}</th>
@@ -23,7 +29,8 @@ const BookingRow = ({ house, index, setDeleteConfirm }) => {
       <td>{rentPerMonth}</td>
       <td>
         <label
-          onClick={() => setDeleteConfirm(house)}
+          // onClick={() => setDeleteConfirm(house)}
+          onClick={showDeleteModal}
           htmlFor="delete-booking-modal"
           className="btn btn-sm bg-red-300 modal-button"
         >

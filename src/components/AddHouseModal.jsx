@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 
-const AddHouseModal = ({ setAddConfirm, refetch }) => {
+const AddHouseModal = ({ setAddConfirm, }) => {
 
 
   const validatePhoneNumber = (value) => {
@@ -51,22 +51,35 @@ const AddHouseModal = ({ setAddConfirm, refetch }) => {
             picture: img,
           };
           console.log(houseInfo);
-          reset();
-                toast.success(`House added successfully!`);
-                setAddConfirm(null);
-                refetch();
 
             // Todo: function for add house to database 
-            
+            fetch("https://house-hunter-server-wheat.vercel.app/add-houses", {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+              },
+              body: JSON.stringify(houseInfo),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.insertedId) {
+                  reset();
+                  toast.success(`House added successfully!`);
+                setAddConfirm(null);
+                // refetch();
+                } else {
+                  toast.error("Add House Failed!");
+                }
+              });
         }
       });
   };
 
   return (
     <div>
-      <input type="checkbox" id="add-house-modal" class="modal-toggle" />
-      <div class="modal modal-bottom sm:modal-middle">
-        <div class="modal-box">
+      <input type="checkbox" id="add-house-modal" className="modal-toggle" />
+      <div className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
           <div className="card-body items-center ">
             <h2 className="card-title text-xl">Add New House</h2>
 

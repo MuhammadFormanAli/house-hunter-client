@@ -1,7 +1,6 @@
 const HouseRow = ({
     house,
     index,
-    // refetch,
     setDeleteConfirm = { setDeleteConfirm },
     setEditConfirm = { setEditConfirm },
   }) => {

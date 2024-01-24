@@ -24,7 +24,7 @@ const SignUp = () => {
     };
     console.log(currentUser);
 
-    fetch("http://localhost:5000/register", {
+    fetch("https://house-hunter-server-wheat.vercel.app/register", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -34,9 +34,6 @@ const SignUp = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.insertedId) {
-          // const accessToken = data.data.accessToken;
-          // setToken(accessToken);
-          // localStorage.setItem("accessToken", accessToken);
           reset();
           toast.success("Sign Up Successful!");
         } else {

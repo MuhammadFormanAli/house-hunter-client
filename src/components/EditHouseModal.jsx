@@ -1,11 +1,10 @@
-
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-
-const EditHouseModal = ({ editConfirm, setEditConfirm }) => {
+const EditHouseModal = ({ editConfirm, setEditConfirm,refetch }) => {
   const {
-    // _id,
+    _id,
     name,
     city,
     address,
@@ -16,9 +15,8 @@ const EditHouseModal = ({ editConfirm, setEditConfirm }) => {
     phoneNumber,
     availabilityDate,
     description,
+    picture
   } = editConfirm;
- 
-
 
   const validatePhoneNumber = (value) => {
     const isValid = /^(\+88)?01[0-9]{9}$/.test(value);
@@ -32,9 +30,10 @@ const EditHouseModal = ({ editConfirm, setEditConfirm }) => {
     reset,
   } = useForm();
 
-//   const [error, setErrorMessage] = useState("");
+  //   const [error, setErrorMessage] = useState("");
 
   const onSubmit = (data) => {
+    
     if (data.photo[0] == undefined) {
       const houseInfo = {
         name: data.name,
@@ -47,30 +46,37 @@ const EditHouseModal = ({ editConfirm, setEditConfirm }) => {
         phoneNumber: data.phoneNumber,
         availabilityDate: data.availabilityDate,
         description: data.description,
-        owner: 'user?._id',
+        picture,
+        owner: "user?._id",
       };
-      console.log(houseInfo);
-      reset();
+      // console.log(houseInfo);
+      axios.put(`https://house-hunter-server-wheat.vercel.app/houses/${_id}`, houseInfo)
+        .then((res) => {
+          console.log(res.data)
+          if (res.data.modifiedCount) {
             toast.success(`House updated successfully!`);
+            reset();
             setEditConfirm(null);
-            // refetch();
-            
+            refetch();
+          } else {
+            toast.error(`Failed to update house!`);
+          }
+        });
 
-// todo: have to add edited info in backend without photo edited
-
+      // todo: have to add edited info in backend without photo edited
     } else {
-      const imageStoragekey = "68cb5fb5d48334a60f021c30aff06ada";
+      const imageStoragekey = "f5de0f96ef15566b396729f30a0f2e28";
       const image = data.photo[0];
+      // console.log(data.photo)
       const formData = new FormData();
       formData.append("image", image);
-      fetch(`https://api.imgbb.com/1/upload?key=${imageStoragekey}`, {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((result) => {
-          if (result.success) {
-            const img = result.data.url;
+      axios.post(`https://api.imgbb.com/1/upload?key=${imageStoragekey}`, formData)
+        
+        .then((res) => {
+          // console.log(res.data)
+          if (res.data.success) {
+            const img = res.data.data.url;
+            // console.log(img)
             const houseInfo = {
               name: data.name,
               address: data.address,
@@ -82,18 +88,23 @@ const EditHouseModal = ({ editConfirm, setEditConfirm }) => {
               phoneNumber: data.phoneNumber,
               availabilityDate: data.availabilityDate,
               description: data.description,
-              owner: 'user?._id',
+              owner: "user?._id",
               picture: img,
             };
-            console.log(houseInfo);
+            // console.log(houseInfo);
 
-            reset();
-            toast.success(`House updated successfully!`);
-            setEditConfirm(null);
-            // refetch();
-            
-// todo: have to add edited info in backend without photo edited
-         
+            axios.put(`https://house-hunter-server-wheat.vercel.app/houses/${_id}`, houseInfo)
+            .then((res) => {
+              console.log(res.data)
+              if (res.data.modifiedCount) {
+                toast.success(`House updated successfully!`);
+                reset();
+                setEditConfirm(null);
+                refetch();
+              } else {
+                toast.error(`Failed to update house!`);
+              }
+            });
           }
         });
     }

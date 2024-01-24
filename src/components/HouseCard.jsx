@@ -18,7 +18,7 @@ const HouseCard = ({ house, setAddConfirm }) => {
   console.log(house);
   return (
     <div className="h-full">
-      <div className="card bg-base-100 shadow-xl">
+      <div className="card bg-base-300 shadow-xl border">
         <div className="h-60 p-4 box-border">
           <img
             src={picture}
@@ -69,14 +69,14 @@ const HouseCard = ({ house, setAddConfirm }) => {
                 htmlFor="add-booking-modal"
                 className="btn btn-primary modal-button mt-6"
               >
-                Add New House
+                Book The House
               </label>
             </>
           )}
           {role === "owner" && (
             <>
               <label disabled className="btn btn-primary modal-button mt-6">
-                Add New House
+                Book The House
               </label>
             </>
           )}

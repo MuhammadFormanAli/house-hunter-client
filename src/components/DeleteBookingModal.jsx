@@ -1,15 +1,24 @@
 /* eslint-disable react/no-unknown-property */
+import axios from "axios";
 import { toast } from "react-toastify";
 
-const DeleteBookingModal = ({ deleteConfirm, setDeleteConfirm }) => {
-  const { _id } = deleteConfirm;
+const DeleteBookingModal = ({  setDeleteConfirm, deleteBookingId,refetch  }) => {
+  const id = deleteBookingId;
 
 
   const handleBookingDelete = () => {
-console.log(_id)
-    toast.success(`Booking deleted Successfully!`);
-    setDeleteConfirm(null);
-    // refetch();
+
+  console.log(id)
+  axios.delete(`https://house-hunter-server-wheat.vercel.app/booking/${id}`)
+    .then((res) => {
+      if (res.data.deletedCount) {
+        toast.success(`Booking deleted Successfully!`);
+        setDeleteConfirm(false);
+        refetch();
+      } else {
+        toast.error(`Failed to delete booking!`);
+      }
+    });
 
   };
   return (

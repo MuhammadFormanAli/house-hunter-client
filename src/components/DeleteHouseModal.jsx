@@ -1,4 +1,5 @@
 
+import axios from "axios";
 import { toast } from "react-toastify";
 
 const DeleteHouseModal = ({ deleteConfirm, setDeleteConfirm, refetch }) => {
@@ -6,15 +7,9 @@ const DeleteHouseModal = ({ deleteConfirm, setDeleteConfirm, refetch }) => {
 
   
   const handleProductDelete = () => {
-    fetch(`https://house-hunter-server-tawny.vercel.app/api/v1/houses/${_id}`, {
-      method: "DELETE",
-      headers: {
-        authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
+    axios.delete(`https://house-hunter-server-wheat.vercel.app/houses/${_id}`)
+      .then((res) => {
+        if (res.data.deletedCount) {
           toast.success(`House deleted Successfully!`);
           setDeleteConfirm(null);
           refetch();
